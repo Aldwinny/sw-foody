@@ -16,4 +16,13 @@ class Helper {
   static TextTheme getTheme(BuildContext context) {
     return Theme.of(context).textTheme;
   }
+
+  static bool isBackButtonRequired(BuildContext context) {
+    const platformsWithoutButton = [
+      TargetPlatform.windows,
+      TargetPlatform.linux,
+      TargetPlatform.macOS
+    ];
+    return platformsWithoutButton.contains(Theme.of(context).platform);
+  }
 }

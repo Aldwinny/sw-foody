@@ -1,4 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:foody_app/screens/auth/forgot_password_screen.dart';
+import 'package:foody_app/screens/auth/signin_screen.dart';
+import 'package:foody_app/screens/auth/signup_screen.dart';
+import 'package:foody_app/screens/home/home_screen.dart';
+import 'package:foody_app/screens/home/intro_screen.dart';
+import 'package:foody_app/screens/home/menu/dessert_screen.dart';
+import 'package:foody_app/screens/home/menu_screen.dart';
+import 'package:foody_app/screens/home/more_screen.dart';
+import 'package:foody_app/screens/home/offers_screen.dart';
+import 'package:foody_app/screens/home/profile_screen.dart';
 import 'package:foody_app/screens/landing_screen.dart';
 import 'package:foody_app/screens/splash_screen.dart';
 
@@ -54,6 +64,25 @@ class MyApp extends StatelessWidget {
         home: const SplashScreen(),
         routes: {
           LandingScreen.routeName: (context) => const LandingScreen(),
+
+          // User Authentication
+          SigninScreen.routeName: (context) => const SigninScreen(),
+          SignUpScreen.routeName: (context) => const SignUpScreen(),
+          ForgotPasswordScreen.routeName: (context) =>
+              const ForgotPasswordScreen(),
+
+          // Home Screen
+          IntroScreen.routeName: (context) => const IntroScreen(),
+          HomeScreen.routeName: (context) => const HomeScreen(),
+
+          // Navbar routes
+          MenuScreen.routeName: (context) => const MenuScreen(),
+          OfferScreen.routeName: (context) => const OfferScreen(),
+          ProfileScreen.routeName: (context) => const ProfileScreen(),
+          MoreScreen.routeName: (context) => const MoreScreen(),
+
+          // TODO: Categorize
+          DessertScreen.routeName: (context) => const DessertScreen(),
         });
   }
 }
