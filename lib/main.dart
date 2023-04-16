@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:foody_app/screens/landing_screen.dart';
+import 'package:foody_app/screens/splash_screen.dart';
+
+import 'package:foody_app/shared/colors.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,58 +14,46 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'hello, world'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+        title: 'Foody',
+        theme: ThemeData(
+          fontFamily: "Metropolis",
+          primarySwatch: Colors.red,
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(AppColor.red),
+                  shape: MaterialStateProperty.all(const StadiumBorder()),
+                  elevation: MaterialStateProperty.all(0))),
+          textButtonTheme: TextButtonThemeData(
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all(AppColor.red))),
+          textTheme: const TextTheme(
+            headline3: TextStyle(
+              color: AppColor.primary,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            headline4: TextStyle(
+              color: AppColor.secondary,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
             ),
-          ],
+            headline5: TextStyle(
+              color: AppColor.primary,
+              fontWeight: FontWeight.normal,
+              fontSize: 25,
+            ),
+            headline6: TextStyle(
+              color: AppColor.primary,
+              fontSize: 25,
+            ),
+            bodyText2: TextStyle(
+              color: AppColor.secondary,
+            ),
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    );
+        home: const SplashScreen(),
+        routes: {
+          LandingScreen.routeName: (context) => const LandingScreen(),
+        });
   }
 }
