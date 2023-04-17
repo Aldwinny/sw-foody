@@ -4,11 +4,14 @@ import 'package:foody_app/screens/auth/signin_screen.dart';
 import 'package:foody_app/screens/auth/signup_screen.dart';
 import 'package:foody_app/screens/home/home_screen.dart';
 import 'package:foody_app/screens/home/intro_screen.dart';
+import 'package:foody_app/screens/home/item_screen.dart';
 import 'package:foody_app/screens/home/menu/dessert_screen.dart';
-import 'package:foody_app/screens/home/menu_screen.dart';
-import 'package:foody_app/screens/home/more_screen.dart';
-import 'package:foody_app/screens/home/offers_screen.dart';
-import 'package:foody_app/screens/home/profile_screen.dart';
+import 'package:foody_app/screens/home/more/about_screen.dart';
+import 'package:foody_app/screens/home/more/change_address_screen.dart';
+import 'package:foody_app/screens/home/more/checkout_screen.dart';
+import 'package:foody_app/screens/home/more/inbox_screen.dart';
+import 'package:foody_app/screens/home/more/my_order_screen.dart';
+import 'package:foody_app/screens/home/more/notification_screen.dart';
 import 'package:foody_app/screens/landing_screen.dart';
 import 'package:foody_app/screens/splash_screen.dart';
 
@@ -24,6 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Foody',
         theme: ThemeData(
           fontFamily: "Metropolis",
@@ -75,14 +79,16 @@ class MyApp extends StatelessWidget {
           IntroScreen.routeName: (context) => const IntroScreen(),
           HomeScreen.routeName: (context) => const HomeScreen(),
 
-          // Navbar routes
-          MenuScreen.routeName: (context) => const MenuScreen(),
-          OfferScreen.routeName: (context) => const OfferScreen(),
-          ProfileScreen.routeName: (context) => const ProfileScreen(),
-          MoreScreen.routeName: (context) => const MoreScreen(),
-
           // TODO: Categorize
+          ItemScreen.routeName: (context) => const ItemScreen(),
           DessertScreen.routeName: (context) => const DessertScreen(),
+          NotificationScreen.routeName: (context) => const NotificationScreen(),
+          AboutScreen.routeName: (context) => const AboutScreen(),
+          InboxScreen.routeName: (context) => const InboxScreen(),
+          MyOrderScreen.routeName: (context) => const MyOrderScreen(),
+          CheckoutScreen.routeName: (context) => const CheckoutScreen(),
+          ChangeAddressScreen.routeName: (context) =>
+              const ChangeAddressScreen(),
         });
   }
 }

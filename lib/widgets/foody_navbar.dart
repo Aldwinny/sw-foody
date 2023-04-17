@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:foody_app/screens/home/home_screen.dart';
-import 'package:foody_app/screens/home/menu_screen.dart';
-import 'package:foody_app/screens/home/more_screen.dart';
-import 'package:foody_app/screens/home/offers_screen.dart';
-import 'package:foody_app/screens/home/profile_screen.dart';
+import 'package:foody_app/screens/home/menu/dessert_screen.dart';
 import 'package:foody_app/shared/colors.dart';
 
 import '../utils/helper.dart';
 
+@Deprecated("Replace")
 class FoodyNavBar extends StatelessWidget {
   final bool home;
   final bool menu;
@@ -56,7 +54,7 @@ class FoodyNavBar extends StatelessWidget {
                     onTap: () {
                       if (!menu) {
                         Navigator.of(context)
-                            .pushReplacementNamed(MenuScreen.routeName);
+                            .pushReplacementNamed(DessertScreen.routeName);
                       }
                     },
                     child: Column(
@@ -81,7 +79,7 @@ class FoodyNavBar extends StatelessWidget {
                     onTap: () {
                       if (!offer) {
                         Navigator.of(context)
-                            .pushReplacementNamed(OfferScreen.routeName);
+                            .pushReplacementNamed(DessertScreen.routeName);
                       }
                     },
                     child: Column(
@@ -103,13 +101,13 @@ class FoodyNavBar extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(
-                    width: 20,
+                    width: 10,
                   ),
                   GestureDetector(
                     onTap: () {
                       if (!profile) {
                         Navigator.of(context)
-                            .pushReplacementNamed(ProfileScreen.routeName);
+                            .pushReplacementNamed(DessertScreen.routeName);
                       }
                     },
                     child: Column(
@@ -134,7 +132,7 @@ class FoodyNavBar extends StatelessWidget {
                     onTap: () {
                       if (!more) {
                         Navigator.of(context)
-                            .pushReplacementNamed(MoreScreen.routeName);
+                            .pushReplacementNamed(DessertScreen.routeName);
                       }
                     },
                     child: Column(
@@ -160,12 +158,12 @@ class FoodyNavBar extends StatelessWidget {
             ),
           ),
           Align(
-            alignment: Alignment.topCenter,
+            alignment: Alignment.center,
             child: SizedBox(
-              height: 70,
-              width: 70,
+              height: 60,
+              width: 60,
               child: FloatingActionButton(
-                elevation: 0,
+                elevation: 5,
                 backgroundColor: home ? AppColor.red : AppColor.placeholder,
                 onPressed: () {
                   if (!home) {

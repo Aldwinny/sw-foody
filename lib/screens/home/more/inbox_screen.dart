@@ -1,96 +1,100 @@
 import 'package:flutter/material.dart';
 import 'package:foody_app/shared/colors.dart';
 import 'package:foody_app/utils/helper.dart';
-import 'package:foody_app/widgets/foody_navbar.dart';
+import 'package:foody_app/widgets/appbar.dart';
+
+const inboxList = [
+  {
+    "title": "MealMonkey Promotions",
+    "description":
+        "Lorem Ipsum dolor sit amet,consectetur adipiscing elit, sed do eiusmod tempor.",
+    "time": "6th July"
+  },
+  {
+    "title": "MealMonkey Promotions",
+    "description":
+        "Lorem Ipsum dolor sit amet,consectetur adipiscing elit, sed do eiusmod tempor.",
+    "time": "6th July"
+  },
+  {
+    "title": "MealMonkey Promotions",
+    "description":
+        "Lorem Ipsum dolor sit amet,consectetur adipiscing elit, sed do eiusmod tempor.",
+    "time": "6th July"
+  },
+  {
+    "title": "MealMonkey Promotions",
+    "description":
+        "Lorem Ipsum dolor sit amet,consectetur adipiscing elit, sed do eiusmod tempor.",
+    "time": "6th July"
+  },
+  {
+    "title": "MealMonkey Promotions",
+    "description":
+        "Lorem Ipsum dolor sit amet,consectetur adipiscing elit, sed do eiusmod tempor.",
+    "time": "6th July"
+  },
+  {
+    "title": "MealMonkey Promotions",
+    "description":
+        "Lorem Ipsum dolor sit amet,consectetur adipiscing elit, sed do eiusmod tempor.",
+    "time": "6th July"
+  },
+  {
+    "title": "MealMonkey Promotions",
+    "description":
+        "Lorem Ipsum dolor sit amet,consectetur adipiscing elit, sed do eiusmod tempor.",
+    "time": "6th July"
+  },
+  {
+    "title": "MealMonkey Promotions",
+    "description":
+        "Lorem Ipsum dolor sit amet,consectetur adipiscing elit, sed do eiusmod tempor.",
+    "time": "6th July"
+  },
+];
 
 class InboxScreen extends StatelessWidget {
   static const routeName = "/inboxScreen";
+
+  const InboxScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          SafeArea(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        icon: const Icon(Icons.arrow_back_ios_rounded),
-                      ),
-                      Expanded(
-                        child: Text(
-                          "Inbox",
-                          style: Helper.getTheme(context).headline5,
-                        ),
-                      ),
-                      Image.asset(
-                        Helper.getAssetName("cart.png", "virtual"),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                const MailCard(
-                  title: "MealMonkey Promotions",
-                  description:
-                      "Lorem Ipsum dolor sit amet,consectetur adipiscing elit, sed do eiusmod tempor ",
-                  time: "6th July",
-                ),
-                const MailCard(
-                  title: "MealMonkey Promotions",
-                  description:
-                      "Lorem Ipsum dolor sit amet,consectetur adipiscing elit, sed do eiusmod tempor ",
-                  time: "6th July",
-                  color: AppColor.placeholderBg,
-                ),
-                const MailCard(
-                  title: "MealMonkey Promotions",
-                  description:
-                      "Lorem Ipsum dolor sit amet,consectetur adipiscing elit, sed do eiusmod tempor ",
-                  time: "6th July",
-                ),
-                const MailCard(
-                  title: "MealMonkey Promotions",
-                  description:
-                      "Lorem Ipsum dolor sit amet,consectetur adipiscing elit, sed do eiusmod tempor ",
-                  time: "6th July",
-                  color: AppColor.placeholderBg,
-                ),
-                const MailCard(
-                  title: "MealMonkey Promotions",
-                  description:
-                      "Lorem Ipsum dolor sit amet,consectetur adipiscing elit, sed do eiusmod tempor ",
-                  time: "6th July",
-                ),
-                const MailCard(
-                  title: "MealMonkey Promotions",
-                  description:
-                      "Lorem Ipsum dolor sit amet,consectetur adipiscing elit, sed do eiusmod tempor ",
-                  time: "6th July",
-                ),
-              ],
-            ),
-          ),
-          const Positioned(
-            bottom: 0,
-            left: 0,
-            child: FoodyNavBar(
-              menu: true,
-            ),
-          ),
-        ],
+      body: SafeArea(
+        child: Column(
+          children: const [
+            FoodyAppBar(label: "Inbox"),
+            Expanded(
+              child: MailCardBuilder(builder: inboxList),
+            )
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class MailCardBuilder extends StatelessWidget {
+  const MailCardBuilder({super.key, required this.builder});
+
+  final List<Map<String, String>> builder;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: builder.length,
+      itemBuilder: (context, index) {
+        final item = builder[index];
+
+        return MailCard(
+          title: item['title']!,
+          description: item['description']!,
+          time: item['time']!,
+          color: index % 2 != 0 ? AppColor.placeholderBg : Colors.white,
+        );
+      },
     );
   }
 }
@@ -112,8 +116,6 @@ class MailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80,
-      width: double.infinity,
       decoration: BoxDecoration(
         color: color,
         border: const Border(
@@ -158,7 +160,6 @@ class MailCard extends StatelessWidget {
                   fontSize: 10,
                 ),
               ),
-              Image.asset(Helper.getAssetName("star.png", "virtual"))
             ],
           ),
         ],

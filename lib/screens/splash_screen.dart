@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
               width: double.infinity,
               child: Image.asset(
                 Helper.getAssetName("splash_icon.png", "background"),
-                fit: BoxFit.fill,
+                fit: BoxFit.fitWidth,
               ),
             ),
             Align(

@@ -12,8 +12,7 @@ class LandingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      child: Stack(
+      body: Stack(
         children: [
           Column(
             children: <Widget>[
@@ -105,6 +104,6 @@ class LandingScreen extends StatelessWidget {
           ),
         ],
       ),
-    ));
+    );
   }
 }

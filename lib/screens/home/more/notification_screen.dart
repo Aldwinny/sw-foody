@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:foody_app/shared/colors.dart';
-import 'package:foody_app/utils/helper.dart';
-import 'package:foody_app/widgets/foody_navbar.dart';
+import 'package:foody_app/widgets/appbar.dart';
+
+const notificationsList = [
+  {"title": "Your order has been picked up", "time": "Now"},
+  {"title": "Your order has been delivered", "time": "1hr ago"},
+  {"title": "Lorem ipsum dolor sit amet, consectetur", "time": "3hr ago"},
+  {"title": "Lorem ipsum dolor sit amet, consectetur", "time": "5hr ago"},
+  {"title": "Lorem ipsum dolor sit amet, consectetur", "time": "05 Sep 2020"},
+  {"title": "Lorem ipsum dolor sit amet, consectetur", "time": "12 Aug 2020"},
+  {"title": "Lorem ipsum dolor sit amet, consectetur", "time": "20 Jul 2020"},
+  {"title": "Lorem ipsum dolor sit amet, consectetur", "time": "12 Jul 2020"},
+];
 
 class NotificationScreen extends StatelessWidget {
   static const routeName = "/notiScreen";
@@ -10,87 +20,41 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          SafeArea(
-              child: Column(
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      icon: const Icon(
-                        Icons.arrow_back_ios_rounded,
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        "Notifications",
-                        style: Helper.getTheme(context).headline5,
-                      ),
-                    ),
-                    Image.asset(
-                      Helper.getAssetName("cart.png", "virtual"),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const NotiCard(
-                title: "Your order has been picked up",
-                time: "Now",
-              ),
-              const NotiCard(
-                title: "Your order has been delivered",
-                time: "1 h ago",
-                color: AppColor.placeholderBg,
-              ),
-              const NotiCard(
-                title: "Lorem ipsum dolor sit amet, consectetur",
-                time: "3 h ago",
-              ),
-              const NotiCard(
-                title: "Lorem ipsum dolor sit amet, consectetur",
-                time: "5 h ago",
-              ),
-              const NotiCard(
-                title: "Lorem ipsum dolor sit amet, consectetur",
-                time: "05 Sep 2020",
-                color: AppColor.placeholderBg,
-              ),
-              const NotiCard(
-                title: "Lorem ipsum dolor sit amet, consectetur",
-                time: "12 Aug 2020",
-                color: AppColor.placeholderBg,
-              ),
-              const NotiCard(
-                title: "Lorem ipsum dolor sit amet, consectetur",
-                time: "20 Jul 2020",
-              ),
-              const NotiCard(
-                title: "Lorem ipsum dolor sit amet, consectetur",
-                time: "12 Jul 2020",
-              ),
-            ],
-          )),
-          const Positioned(
-              bottom: 0,
-              left: 0,
-              child: FoodyNavBar(
-                menu: true,
-              ))
-        ],
+      body: SafeArea(
+        child: Column(
+          children: const [
+            FoodyAppBar(label: "Notifications"),
+            Flexible(
+                fit: FlexFit.tight,
+                child: NotiCardBuilder(builder: notificationsList))
+          ],
+        ),
       ),
     );
+  }
+}
+
+class NotiCardBuilder extends StatelessWidget {
+  const NotiCardBuilder({
+    super.key,
+    required this.builder,
+  });
+
+  final List<Map<String, String>> builder;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: builder.length,
+        itemBuilder: (context, index) {
+          final item = builder[index];
+
+          return NotiCard(
+              time: item['time']!,
+              title: item['title']!,
+              color: index % 2 != 0 ? AppColor.placeholderBg : Colors.white);
+        });
   }
 }
 

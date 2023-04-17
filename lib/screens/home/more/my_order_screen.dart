@@ -1,44 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:foody_app/shared/colors.dart';
 import 'package:foody_app/utils/helper.dart';
-import 'package:foody_app/widgets/foody_navbar.dart';
+import 'package:foody_app/widgets/appbar.dart';
 
 import 'checkout_screen.dart';
 
 class MyOrderScreen extends StatelessWidget {
   static const routeName = "/myOrderScreen";
+
+  const MyOrderScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          SafeArea(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 15),
             child: Column(
               children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      icon: const Icon(
-                        Icons.arrow_back_ios_rounded,
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        "My Order",
-                        style: Helper.getTheme(context).headline5,
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
+                const FoodyAppBar(label: "My Order"),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: SizedBox(
@@ -284,16 +264,11 @@ class MyOrderScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
-          const Positioned(
-            bottom: 0,
-            left: 0,
-            child: FoodyNavBar(),
-          ),
-        ],
+        ),
       ),
     );
   }
