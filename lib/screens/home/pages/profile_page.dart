@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:foody_app/main.dart';
 import 'package:foody_app/shared/colors.dart';
 import 'package:foody_app/utils/helper.dart';
 import 'package:foody_app/widgets/appbar.dart';
+import 'package:foody_app/widgets/foody_text_input.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserData>(context).user;
+    final userData = Provider.of<UserData>(context).userData;
     return SafeArea(
       bottom: false,
       child: SingleChildScrollView(
@@ -72,7 +77,7 @@ class ProfilePage extends StatelessWidget {
                 height: 10,
               ),
               Text(
-                "Hi there Emilia!",
+                "Hi there ${user?.displayName ?? 'User'}",
                 style: Helper.getTheme(context).headline4!.copyWith(
                       color: AppColor.primary,
                     ),
@@ -84,46 +89,30 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(
                 height: 40,
               ),
-              const CustomFormImput(
+              FoodyTextInput(
                 label: "Name",
-                value: "Emilia Clarke",
+                value: user?.displayName,
               ),
               const SizedBox(
                 height: 20,
               ),
-              const CustomFormImput(
-                label: "Email",
-                value: "emiliaclarke@email.com",
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const CustomFormImput(
+              FoodyTextInput(
                 label: "Mobile No",
-                value: "emiliaclarke@email.com",
+                value: userData?['number'],
               ),
               const SizedBox(
                 height: 20,
               ),
-              const CustomFormImput(
+              FoodyTextInput(
                 label: "Address",
-                value: "No 23, 6th Lane, Colombo 03",
+                value: userData?['address'],
               ),
               const SizedBox(
                 height: 20,
               ),
-              const CustomFormImput(
-                label: "Password",
-                value: "Emilia Clarke",
-                isPassword: true,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const CustomFormImput(
-                label: "Confirm Password",
-                value: "Emilia Clarke",
-                isPassword: true,
+              const FoodyTextInput(
+                label: "Enter your password before saving changes",
+                obscureText: true,
               ),
               const SizedBox(
                 height: 20,
@@ -138,47 +127,6 @@ class ProfilePage extends StatelessWidget {
               )
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class CustomFormImput extends StatelessWidget {
-  const CustomFormImput({
-    super.key,
-    required this.label,
-    required this.value,
-    this.isPassword = false,
-  });
-
-  final String label;
-  final String value;
-  final bool isPassword;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 50,
-      padding: const EdgeInsets.only(left: 40),
-      decoration: const ShapeDecoration(
-        shape: StadiumBorder(),
-        color: AppColor.placeholderBg,
-      ),
-      child: TextFormField(
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          labelText: label,
-          contentPadding: const EdgeInsets.only(
-            top: 10,
-            bottom: 10,
-          ),
-        ),
-        obscureText: isPassword,
-        initialValue: value,
-        style: const TextStyle(
-          fontSize: 14,
         ),
       ),
     );

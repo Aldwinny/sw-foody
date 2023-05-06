@@ -4,8 +4,6 @@ import 'package:foody_app/screens/home/pages/menu_page.dart';
 import 'package:foody_app/screens/home/pages/more_page.dart';
 import 'package:foody_app/screens/home/pages/offers_page.dart';
 import 'package:foody_app/screens/home/pages/profile_page.dart';
-import 'package:foody_app/shared/colors.dart';
-import 'package:foody_app/utils/helper.dart';
 import 'package:foody_app/widgets/food_bottom_navbar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -48,21 +46,13 @@ class _HomeScreenState extends State<HomeScreen> {
         index: _index,
         onPress: transitionPage,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: _index == 2 ? AppColor.red : AppColor.placeholder,
-        onPressed: () => transitionPage(2),
-        child: Image.asset(Helper.getAssetName("home_white.png", "virtual"),
-            scale: 1.2),
-      ),
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: (index) => setState(() => _index = index),
         children: const <Widget>[
-          MenuPage(),
-          OffersPage(),
           HomePage(),
+          OffersPage(),
           ProfilePage(),
           MorePage(),
         ],

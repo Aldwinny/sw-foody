@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foody_app/screens/auth/forgot_password_screen.dart';
 import 'package:foody_app/screens/auth/signin_screen.dart';
@@ -17,8 +18,15 @@ import 'package:foody_app/screens/splash_screen.dart';
 
 import 'package:foody_app/shared/colors.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  ).whenComplete(() => runApp(const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -26,69 +34,85 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Foody',
-        theme: ThemeData(
-          fontFamily: "Metropolis",
-          primarySwatch: Colors.red,
-          elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(AppColor.red),
-                  shape: MaterialStateProperty.all(const StadiumBorder()),
-                  elevation: MaterialStateProperty.all(0))),
-          textButtonTheme: TextButtonThemeData(
-              style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all(AppColor.red))),
-          textTheme: const TextTheme(
-            headline3: TextStyle(
-              color: AppColor.primary,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-            headline4: TextStyle(
-              color: AppColor.secondary,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-            headline5: TextStyle(
-              color: AppColor.primary,
-              fontWeight: FontWeight.normal,
-              fontSize: 25,
-            ),
-            headline6: TextStyle(
-              color: AppColor.primary,
-              fontSize: 25,
-            ),
-            bodyText2: TextStyle(
-              color: AppColor.secondary,
+    return ChangeNotifierProvider(
+      create: (context) => UserData(),
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Foody',
+          theme: ThemeData(
+            fontFamily: "Metropolis",
+            primarySwatch: Colors.red,
+            elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(AppColor.red),
+                    shape: MaterialStateProperty.all(const StadiumBorder()),
+                    elevation: MaterialStateProperty.all(0))),
+            textButtonTheme: TextButtonThemeData(
+                style: ButtonStyle(
+                    foregroundColor: MaterialStateProperty.all(AppColor.red))),
+            textTheme: const TextTheme(
+              headline3: TextStyle(
+                color: AppColor.primary,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+              headline4: TextStyle(
+                color: AppColor.secondary,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+              headline5: TextStyle(
+                color: AppColor.primary,
+                fontWeight: FontWeight.normal,
+                fontSize: 25,
+              ),
+              headline6: TextStyle(
+                color: AppColor.primary,
+                fontSize: 25,
+              ),
+              bodyText2: TextStyle(
+                color: AppColor.secondary,
+              ),
             ),
           ),
-        ),
-        home: const SplashScreen(),
-        routes: {
-          LandingScreen.routeName: (context) => const LandingScreen(),
+          home: const SplashScreen(),
+          routes: {
+            LandingScreen.routeName: (context) => const LandingScreen(),
 
-          // User Authentication
-          SigninScreen.routeName: (context) => const SigninScreen(),
-          SignUpScreen.routeName: (context) => const SignUpScreen(),
-          ForgotPasswordScreen.routeName: (context) =>
-              const ForgotPasswordScreen(),
+            // User Authentication
+            SigninScreen.routeName: (context) => const SigninScreen(),
+            SignUpScreen.routeName: (context) => const SignUpScreen(),
+            ForgotPasswordScreen.routeName: (context) =>
+                const ForgotPasswordScreen(),
 
-          // Home Screen
-          IntroScreen.routeName: (context) => const IntroScreen(),
-          HomeScreen.routeName: (context) => const HomeScreen(),
+            // Home Screen
+            IntroScreen.routeName: (context) => const IntroScreen(),
+            HomeScreen.routeName: (context) => const HomeScreen(),
 
-          // TODO: Categorize
-          ItemScreen.routeName: (context) => const ItemScreen(),
-          DessertScreen.routeName: (context) => const DessertScreen(),
-          NotificationScreen.routeName: (context) => const NotificationScreen(),
-          AboutScreen.routeName: (context) => const AboutScreen(),
-          InboxScreen.routeName: (context) => const InboxScreen(),
-          MyOrderScreen.routeName: (context) => const MyOrderScreen(),
-          CheckoutScreen.routeName: (context) => const CheckoutScreen(),
-          ChangeAddressScreen.routeName: (context) =>
-              const ChangeAddressScreen(),
-        });
+            // TODO: Categorize
+            ItemScreen.routeName: (context) => const ItemScreen(),
+            DessertScreen.routeName: (context) => const DessertScreen(),
+            NotificationScreen.routeName: (context) =>
+                const NotificationScreen(),
+            AboutScreen.routeName: (context) => const AboutScreen(),
+            InboxScreen.routeName: (context) => const InboxScreen(),
+            MyOrderScreen.routeName: (context) => const MyOrderScreen(),
+            CheckoutScreen.routeName: (context) => const CheckoutScreen(),
+            ChangeAddressScreen.routeName: (context) =>
+                const ChangeAddressScreen(),
+          }),
+    );
+  }
+}
+
+class UserData with ChangeNotifier {
+  User? _user;
+  Map<String, dynamic>? userData = {};
+
+  User? get user => _user;
+
+  void setUser(User user, Map<String, dynamic>? info) {
+    _user = user;
+    userData = info;
   }
 }

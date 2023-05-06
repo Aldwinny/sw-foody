@@ -17,16 +17,14 @@ class FoodyBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 8,
       child: SizedBox(
         height: 70,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             NavigationButton(
-              label: "Menu",
-              icon: Icon(index == 0 ? Icons.category : Icons.category_outlined,
+              label: "Home",
+              icon: Icon(index == 0 ? Icons.home : Icons.home_outlined,
                   color: getColor(0)),
               textStyle: index == 0 ? activeTextStyle : null,
               onTap: () => onPress(0),
@@ -39,23 +37,22 @@ class FoodyBottomNavigationBar extends StatelessWidget {
               textStyle: index == 1 ? activeTextStyle : null,
               onTap: () => onPress(1),
             ),
-            const SizedBox(width: 5),
             NavigationButton(
               label: "Profile",
               icon: Icon(
                   index == 3
                       ? Icons.account_circle
                       : Icons.account_circle_outlined,
-                  color: getColor(3)),
-              textStyle: index == 3 ? activeTextStyle : null,
-              onTap: () => onPress(3),
+                  color: getColor(2)),
+              textStyle: index == 2 ? activeTextStyle : null,
+              onTap: () => onPress(2),
             ),
             NavigationButton(
               label: "More",
-              icon: Icon(index == 4 ? Icons.more : Icons.more_outlined,
-                  color: getColor(4)),
-              textStyle: index == 4 ? activeTextStyle : null,
-              onTap: () => onPress(4),
+              icon: Icon(index == 3 ? Icons.more : Icons.more_outlined,
+                  color: getColor(3)),
+              textStyle: index == 3 ? activeTextStyle : null,
+              onTap: () => onPress(3),
             ),
           ],
         ),

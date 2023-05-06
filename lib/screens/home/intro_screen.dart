@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:foody_app/main.dart';
 import 'package:foody_app/screens/home/home_screen.dart';
 import 'package:foody_app/shared/colors.dart';
 import 'package:foody_app/utils/helper.dart';
+import 'package:provider/provider.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
@@ -66,7 +68,7 @@ class _IntroScreenState extends State<IntroScreen> {
                     },
                     itemBuilder: (context, index) {
                       return Image.asset(Helper.getAssetName(
-                          _pages[index]["image"]!, "virtual"));
+                          _pages[count]["image"]!, "virtual"));
                     },
                     itemCount: _pages.length,
                   ),
