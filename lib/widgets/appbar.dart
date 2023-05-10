@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:foody_app/screens/home/more/my_order_screen.dart';
 import 'package:foody_app/utils/helper.dart';
 
 class FoodyAppBar extends StatelessWidget {
   const FoodyAppBar({
     super.key,
     required this.label,
+    this.inverted = false,
     this.useCart = false,
     this.useBackButton = true,
   });
@@ -12,6 +14,7 @@ class FoodyAppBar extends StatelessWidget {
   final String label;
   final bool useCart;
   final bool useBackButton;
+  final bool inverted;
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +28,9 @@ class FoodyAppBar extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back_ios_rounded,
+                color: inverted ? Colors.white : null,
               ),
             ),
           Expanded(
@@ -36,8 +40,14 @@ class FoodyAppBar extends StatelessWidget {
             ),
           ),
           if (useCart)
-            Image.asset(
-              Helper.getAssetName("cart.png", "virtual"),
+            InkWell(
+              onTap: () {
+                Navigator.of(context).pushNamed(MyOrderScreen.routeName);
+              },
+              child: Image.asset(
+                Helper.getAssetName("cart.png", "virtual"),
+                color: inverted ? Colors.white : null,
+              ),
             ),
         ],
       ),

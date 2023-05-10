@@ -137,15 +137,12 @@ class OfferCard extends StatelessWidget {
                 const SizedBox(
                   width: 5,
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 5),
-                  child: Text(
-                    ".",
-                    style: TextStyle(
-                        color: AppColor.red, fontWeight: FontWeight.bold),
-                  ),
+                const Text(
+                  "·",
+                  style: TextStyle(
+                      color: AppColor.red, fontWeight: FontWeight.bold),
                 ),
-                const Text(" Western Food"),
+                const Text(" Western Food · 20% OFF"),
               ],
             ),
           )

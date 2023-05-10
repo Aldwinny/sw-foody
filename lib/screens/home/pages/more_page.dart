@@ -3,6 +3,7 @@ import 'package:foody_app/screens/home/more/about_screen.dart';
 import 'package:foody_app/screens/home/more/inbox_screen.dart';
 import 'package:foody_app/screens/home/more/my_order_screen.dart';
 import 'package:foody_app/screens/home/more/notification_screen.dart';
+import 'package:foody_app/screens/home/more/transaction_history_screen.dart';
 import 'package:foody_app/shared/colors.dart';
 import 'package:foody_app/utils/helper.dart';
 import 'package:foody_app/widgets/appbar.dart';
@@ -44,6 +45,15 @@ class MorePage extends StatelessWidget {
                 },
               ),
               MoreCard(
+                image: const Icon(Icons.history,
+                    size: 30, color: AppColor.primary),
+                name: "Transaction History",
+                handler: () {
+                  Navigator.of(context)
+                      .pushNamed(TransactionHistoryScreen.routeName);
+                },
+              ),
+              MoreCard(
                 image: Image.asset(
                   Helper.getAssetName("mail.png", "virtual"),
                 ),
@@ -79,7 +89,7 @@ class MoreCard extends StatelessWidget {
       this.padding = const EdgeInsets.symmetric(horizontal: 5, vertical: 7)});
 
   final String name;
-  final Image? image;
+  final Widget? image;
   final bool isNoti;
   final Function()? handler;
   final EdgeInsetsGeometry padding;

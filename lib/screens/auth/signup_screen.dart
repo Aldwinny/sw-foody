@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:foody_app/main.dart';
 import 'package:foody_app/screens/auth/signin_screen.dart';
 import 'package:foody_app/screens/home/intro_screen.dart';
-import 'package:foody_app/services/firebase_auth.dart';
 import 'package:foody_app/shared/colors.dart';
 import 'package:foody_app/utils/helper.dart';
 import 'package:foody_app/widgets/foody_text_input.dart';
+import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -30,6 +31,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   final _passwordController = TextEditingController();
 
+  String error = '';
+  bool isLoading = false;
+
   Future<bool> _submitForm() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
@@ -52,23 +56,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
         final userRef = FirebaseFirestore.instance.collection("users");
         await userRef.doc(user.uid).set({
           'name': name,
-          'address': _addressController.text,
-          'number': _mobileNoController.text,
+          'address': address,
+          'number': number,
         });
 
-        print("oh you have account now, congratz");
+        final query = await userRef.doc(user.uid).get();
+        if (mounted) {
+          Provider.of<UserData>(context, listen: false)
+              .setUser(user, query.data());
+        }
+
+        setState(() => error = "");
         return true;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
-          print('The password provided is too weak');
+          setState(() => error = "The password provided is too weak");
         } else if (e.code == 'email-already-in-use') {
-          print('The account already exists for that email');
+          setState(() => error = "An account already exists with that email");
         } else {
-          print(e);
+          setState(() => error = "An error has occurred");
         }
         return false;
       } catch (e) {
-        print(e);
+        setState(() => error =
+            "An unknown error has occurred. Please check your connection.");
         return false;
       }
     } else {
@@ -198,6 +209,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     obscureText: true,
                   ),
                 ),
+                !isLoading && error != ''
+                    ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(error,
+                            style: const TextStyle(
+                              color: AppColor.red,
+                            )),
+                      )
+                    : isLoading
+                        ? CircularProgressIndicator()
+                        : Text(''),
                 Padding(
                   padding: SignUpScreen.textInputPadding,
                   child: SizedBox(
@@ -206,12 +228,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: ElevatedButton(
                       onPressed: () async {
                         print('hi');
+                        setState(() {
+                          isLoading = true;
+                        });
                         if (await _submitForm()) {
                           Navigator.of(context)
                               .popUntil((route) => route.isFirst);
                           Navigator.of(context)
                               .pushReplacementNamed(IntroScreen.routeName);
                         }
+                        setState(() {
+                          isLoading = false;
+                        });
                       },
                       child: const Text("Sign Up"),
                     ),

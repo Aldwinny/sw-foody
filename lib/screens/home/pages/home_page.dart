@@ -1,37 +1,95 @@
+import 'dart:math';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foody_app/main.dart';
+import 'package:foody_app/screens/home/all_items_screen.dart';
 import 'package:foody_app/screens/home/item_screen.dart';
 import 'package:foody_app/shared/colors.dart';
+import 'package:foody_app/shared/items.dart';
 import 'package:foody_app/utils/helper.dart';
+import 'package:foody_app/widgets/appbar.dart';
 import 'package:foody_app/widgets/foody_searchbar.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late final List<Map<String, dynamic>> itemSet;
+  late final List<String> countries;
+  late final List<Map<String, dynamic>> famous3;
+  late final List<Map<String, dynamic>> randomRecommends;
+
+  @override
+  void initState() {
+    itemSet = items;
+
+    // Get region list for later
+    countries = items.map<String>((e) => e['region']).toSet().toList();
+
+    // Get top 3
+    var famous3temp = List<Map<String, dynamic>>.from(items);
+    famous3temp.sort((a, b) => b["rating"].compareTo(a['rating']));
+    famous3 = famous3temp.sublist(0, 3);
+
+    // Get random items
+    List<Map<String, dynamic>> randomTemp = [];
+
+    while (randomTemp.length < 5) {
+      int randomIndex = Random().nextInt(items.length);
+      if (!randomTemp.contains(items[randomIndex])) {
+        randomTemp.add(items[randomIndex]);
+      }
+    }
+
+    randomRecommends = randomTemp;
+
+    print(countries);
+    // Get list of countries
+
+    // Store them
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserData>(context, listen: false).user ??
+        FirebaseAuth.instance.currentUser;
+    final hour = DateFormat('H').format(DateTime.now()).toString();
+    final intHour = int.parse(hour);
+    final String greeting;
+
+    if (intHour >= 6 && intHour < 12) {
+      greeting = 'Good morning';
+    } else if (intHour >= 12 && intHour < 18) {
+      greeting = 'Good afternoon';
+    } else {
+      greeting = 'Good evening';
+    }
+
     return SafeArea(
       bottom: false,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 20,
-            ),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Good morning Akila!",
-                    style: Helper.getTheme(context).headline5,
-                  ),
-                  Image.asset(Helper.getAssetName("cart.png", "virtual"))
-                ],
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: FoodyAppBar(
+                  label: '$greeting, ${user?.displayName ?? "User"}!',
+                  useCart: true,
+                  useBackButton: false),
             ),
             const SizedBox(
               height: 20,
@@ -84,52 +142,33 @@ class HomePage extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    CategoryCard(
-                      image: Image.asset(
-                        Helper.getAssetName("hamburger2.jpg", "real"),
-                        fit: BoxFit.cover,
-                      ),
-                      name: "Offers",
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    CategoryCard(
-                      image: Image.asset(
-                        Helper.getAssetName("rice2.jpg", "real"),
-                        fit: BoxFit.cover,
-                      ),
-                      name: "Sri Lankan",
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    CategoryCard(
-                      image: Image.asset(
-                        Helper.getAssetName("fruit.jpg", "real"),
-                        fit: BoxFit.cover,
-                      ),
-                      name: "Italian",
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    CategoryCard(
-                      image: Image.asset(
-                        Helper.getAssetName("rice.jpg", "real"),
-                        fit: BoxFit.cover,
-                      ),
-                      name: "Indian",
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    ...countries.map<Widget>((e) {
+                      Map<String, dynamic> regionItem = itemSet
+                          .firstWhere((element) => element['region'] == e);
+
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                              AllItemsScreen.routeName,
+                              arguments: {"region": regionItem["region"]});
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: CategoryCard(
+                              image: Image.asset(
+                                  Helper.getAssetName(regionItem['bundle'][1],
+                                      regionItem['bundle'][0]),
+                                  fit: BoxFit.cover),
+                              name: regionItem['region']),
+                        ),
+                      );
+                    }).toList(),
                   ],
                 ),
               ),
             ),
             const SizedBox(
-              height: 50,
+              height: 30,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -152,21 +191,21 @@ class HomePage extends StatelessWidget {
                 Helper.getAssetName("pizza2.jpg", "real"),
                 fit: BoxFit.cover,
               ),
-              name: "Minute by tuk tuk",
+              name: "Da Vinci Pizza",
             ),
             RestaurantCard(
               image: Image.asset(
                 Helper.getAssetName("breakfast.jpg", "real"),
                 fit: BoxFit.cover,
               ),
-              name: "Cafe de Noir",
+              name: "Kapihan ni Aling Amihan",
             ),
             RestaurantCard(
               image: Image.asset(
                 Helper.getAssetName("bakery.jpg", "real"),
                 fit: BoxFit.cover,
               ),
-              name: "Bakes by Tella",
+              name: "Tinapay ni Tella",
             ),
             const SizedBox(
               height: 50,
@@ -203,13 +242,13 @@ class HomePage extends StatelessWidget {
                         Helper.getAssetName("pizza4.jpg", "real"),
                         fit: BoxFit.cover,
                       ),
-                      name: "Cafe De Bambaa",
+                      name: "Kapihan sa Bambang",
                     ),
                     const SizedBox(
                       width: 30,
                     ),
                     MostPopularCard(
-                      name: "Burger by Bella",
+                      name: "Burger ni Aling Bella",
                       image: Image.asset(
                         Helper.getAssetName("dessert3.jpg", "real"),
                         fit: BoxFit.cover,
@@ -228,11 +267,13 @@ class HomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Recent Items",
+                    "Random finds",
                     style: Helper.getTheme(context).headline5,
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(AllItemsScreen.routeName);
+                    },
                     child: const Text("View all"),
                   ),
                 ],
@@ -244,30 +285,22 @@ class HomePage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(ItemScreen.routeName);
-                    },
-                    child: RecentItemCard(
-                      image: Image.asset(
-                        Helper.getAssetName("pizza3.jpg", "real"),
-                        fit: BoxFit.cover,
-                      ),
-                      name: "Mulberry Pizza by Josh",
-                    ),
-                  ),
-                  RecentItemCard(
-                      image: Image.asset(
-                        Helper.getAssetName("coffee.jpg", "real"),
-                        fit: BoxFit.cover,
-                      ),
-                      name: "Barita"),
-                  RecentItemCard(
-                      image: Image.asset(
-                        Helper.getAssetName("pizza.jpg", "real"),
-                        fit: BoxFit.cover,
-                      ),
-                      name: "Pizza Rush Hour"),
+                  ...randomRecommends.map<Widget>((e) {
+                    return InkWell(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(ItemScreen.routeName,
+                              arguments: e['id']);
+                        },
+                        child: RecentItemCard(
+                            name: e['title'],
+                            rating: e['rating'],
+                            ratingCount: e['rating_count'],
+                            restaurantType: e['restaurant_type'],
+                            image: Image.asset(
+                                Helper.getAssetName(
+                                    e['bundle'][1], e['bundle'][0]),
+                                fit: BoxFit.cover)));
+                  }).toList(),
                   const SizedBox(height: 75)
                 ],
               ),
@@ -284,30 +317,37 @@ class RecentItemCard extends StatelessWidget {
     super.key,
     required this.name,
     required this.image,
+    required this.restaurantType,
+    required this.rating,
+    required this.ratingCount,
   });
 
   final String name;
+  final String restaurantType;
+  final int ratingCount;
+  final double rating;
   final Image image;
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: SizedBox(
-            width: 80,
-            height: 80,
-            child: image,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: SizedBox(
+              width: 80,
+              height: 80,
+              child: image,
+            ),
           ),
-        ),
-        const SizedBox(
-          width: 10,
         ),
         Expanded(
           child: SizedBox(
-            height: 100,
+            height: 70,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -350,14 +390,14 @@ class RecentItemCard extends StatelessWidget {
                     const SizedBox(
                       width: 5,
                     ),
-                    const Text(
-                      "4.9",
-                      style: TextStyle(
+                    Text(
+                      "$rating",
+                      style: const TextStyle(
                         color: AppColor.red,
                       ),
                     ),
                     const SizedBox(width: 10),
-                    const Text('(124) Ratings')
+                    Text('($ratingCount) Ratings')
                   ],
                 )
               ],

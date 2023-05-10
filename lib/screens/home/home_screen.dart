@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:foody_app/screens/home/pages/home_page.dart';
-import 'package:foody_app/screens/home/pages/menu_page.dart';
 import 'package:foody_app/screens/home/pages/more_page.dart';
 import 'package:foody_app/screens/home/pages/offers_page.dart';
 import 'package:foody_app/screens/home/pages/profile_page.dart';
@@ -15,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _index = 3;
+  int _index = 0;
   late PageController _pageController;
 
   @override

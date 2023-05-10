@@ -99,7 +99,7 @@ class ChangeAddressScreen extends StatelessWidget {
                           height: 10,
                         ),
                         Text(
-                          "653 Nostrand Ave., Brooklyn, NY 11216",
+                          "Quezon City, Manila, Philippines",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 12,

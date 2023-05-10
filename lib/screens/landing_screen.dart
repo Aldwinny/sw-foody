@@ -1,13 +1,46 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foody_app/main.dart';
 import 'package:foody_app/screens/auth/signin_screen.dart';
 import 'package:foody_app/screens/auth/signup_screen.dart';
+import 'package:foody_app/screens/home/home_screen.dart';
 import 'package:foody_app/shared/colors.dart';
 import 'package:foody_app/utils/helper.dart';
+import 'package:provider/provider.dart';
 
-class LandingScreen extends StatelessWidget {
+class LandingScreen extends StatefulWidget {
   static const routeName = "/landingScreen";
 
   const LandingScreen({super.key});
+
+  @override
+  State<LandingScreen> createState() => _LandingScreenState();
+}
+
+class _LandingScreenState extends State<LandingScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initUserInformation();
+    });
+    super.initState();
+  }
+
+  _initUserInformation() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      final userRef = FirebaseFirestore.instance.collection("users");
+      final query = await userRef.doc(user.uid).get();
+
+      if (mounted) {
+        Provider.of<UserData>(context, listen: false)
+            .setUser(user, query.data());
+        Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

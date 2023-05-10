@@ -29,6 +29,9 @@ class _SigninScreenState extends State<SigninScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  String error = '';
+  bool isLoading = false;
+
   Future<bool> _submitForm() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
@@ -52,22 +55,24 @@ class _SigninScreenState extends State<SigninScreen> {
               .setUser(user, query.data());
         }
 
-        print("oh you logged in, congratz");
+        setState(() => error = "");
         return true;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'wrong-password') {
-          print('Wrong password');
+          setState(() => error = "User does not match with password");
         } else if (e.code == 'user-not-found') {
-          print('User does not exists');
+          setState(() => error = "User does not exist");
         } else {
-          print(e);
+          setState(() => error = "An error has occurred");
         }
         return false;
       } catch (e) {
-        print(e);
+        setState(() => error =
+            "An unknown error has occurred. Please check your connection.");
         return false;
       }
     } else {
+      setState(() => error = "Validation error");
       return false;
     }
   }
@@ -143,6 +148,17 @@ class _SigninScreenState extends State<SigninScreen> {
                     },
                   ),
                 ),
+                !isLoading && error != ''
+                    ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(error,
+                            style: const TextStyle(
+                              color: AppColor.red,
+                            )),
+                      )
+                    : isLoading
+                        ? CircularProgressIndicator()
+                        : Text(''),
                 Padding(
                   padding: SigninScreen.textInputPadding,
                   child: SizedBox(
@@ -150,12 +166,16 @@ class _SigninScreenState extends State<SigninScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () async {
+                        setState(() => isLoading = true);
                         if (await _submitForm()) {
                           Navigator.of(context)
                               .popUntil((route) => route.isFirst);
                           Navigator.of(context)
                               .pushReplacementNamed(IntroScreen.routeName);
                         }
+                        setState(() {
+                          isLoading = false;
+                        });
                       },
                       child: const Text("Login"),
                     ),

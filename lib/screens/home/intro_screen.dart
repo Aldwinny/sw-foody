@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:foody_app/main.dart';
 import 'package:foody_app/screens/home/home_screen.dart';
 import 'package:foody_app/shared/colors.dart';
 import 'package:foody_app/utils/helper.dart';
-import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
@@ -17,6 +16,7 @@ class IntroScreen extends StatefulWidget {
 class _IntroScreenState extends State<IntroScreen> {
   late PageController _controller;
   late int count;
+  late SharedPreferences prefs;
   final List<Map<String, String>> _pages = [
     {
       "image": "vector1.png",
@@ -41,7 +41,21 @@ class _IntroScreenState extends State<IntroScreen> {
   void initState() {
     _controller = PageController();
     count = 0;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initPrefs();
+    });
     super.initState();
+  }
+
+  _initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      if (prefs.getBool('intro') ?? false) {
+        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+      } else {
+        prefs.setBool('intro', true);
+      }
+    }
   }
 
   @override

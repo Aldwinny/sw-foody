@@ -1,14 +1,78 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foody_app/shared/colors.dart';
+import 'package:foody_app/shared/items.dart';
 import 'package:foody_app/utils/helper.dart';
+import 'package:foody_app/widgets/appbar.dart';
 
-class ItemScreen extends StatelessWidget {
+class ItemScreen extends StatefulWidget {
   const ItemScreen({super.key});
 
   static const routeName = "/individualItemScreen";
 
   @override
+  State<ItemScreen> createState() => _ItemScreenState();
+}
+
+class _ItemScreenState extends State<ItemScreen> {
+  int qty = 1;
+  String? selectedPortion;
+
+  Future<bool> addToCart(
+      int itemId, int qty, String portion, double price) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      final cartRef = FirebaseFirestore.instance.collection("cart");
+      final newDocRef = cartRef.doc(user.uid).collection("cart_items");
+
+      final findItem = await newDocRef
+          .where('itemid', isEqualTo: itemId)
+          .where('portion', isEqualTo: portion)
+          .get();
+
+      if (findItem.size <= 0) {
+        print('not found');
+        await newDocRef.add({
+          'itemid': itemId,
+          'portion': portion,
+          'quantity': qty,
+          'price': price,
+        });
+      } else {
+        print('found');
+        await newDocRef.doc(findItem.docs.first.id).update({
+          'quantity': qty,
+          'price': price,
+        });
+      }
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Get arguments
+    int? args =
+        int.tryParse(ModalRoute.of(context)!.settings.arguments.toString());
+
+    if (args == null) {
+      Navigator.of(context).pop();
+    }
+
+    // Get item by index
+    final representedItem =
+        items.firstWhere((element) => element['id'] == args);
+
+    final List<String> representedItemPortion = representedItem['portions'];
+
+    selectedPortion =
+        selectedPortion ?? representedItemPortion.map<String>((e) => e).first;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -24,7 +88,8 @@ class ItemScreen extends StatelessWidget {
                       height: Helper.getScreenHeight(context) * 0.5,
                       width: Helper.getScreenWidth(context),
                       child: Image.asset(
-                        Helper.getAssetName("pizza3.jpg", "real"),
+                        Helper.getAssetName(representedItem['bundle'][1],
+                            representedItem['bundle'][0]),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -48,26 +113,10 @@ class ItemScreen extends StatelessWidget {
                 SafeArea(
                   child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Icon(
-                                Icons.arrow_back_ios_rounded,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Image.asset(
-                              Helper.getAssetName("cart_white.png", "virtual"),
-                            ),
-                          ],
-                        ),
-                      ),
+                      const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20.0),
+                          child: FoodyAppBar(
+                              label: "", useCart: true, inverted: true)),
                       SizedBox(
                         height: Helper.getScreenHeight(context) * 0.35,
                       ),
@@ -99,7 +148,7 @@ class ItemScreen extends StatelessWidget {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 20),
                                       child: Text(
-                                        "Tandoori Chicken Pizza",
+                                        representedItem['title'],
                                         style:
                                             Helper.getTheme(context).headline5,
                                       ),
@@ -117,42 +166,9 @@ class ItemScreen extends StatelessWidget {
                                             children: [
                                               Row(
                                                 children: [
-                                                  Image.asset(
-                                                    Helper.getAssetName(
-                                                        "star_filled.png",
-                                                        "virtual"),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 8,
-                                                  ),
-                                                  Image.asset(
-                                                    Helper.getAssetName(
-                                                        "star_filled.png",
-                                                        "virtual"),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 8,
-                                                  ),
-                                                  Image.asset(
-                                                    Helper.getAssetName(
-                                                        "star_filled.png",
-                                                        "virtual"),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 8,
-                                                  ),
-                                                  Image.asset(
-                                                    Helper.getAssetName(
-                                                        "star_filled.png",
-                                                        "virtual"),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 8,
-                                                  ),
-                                                  Image.asset(
-                                                    Helper.getAssetName(
-                                                        "star.png", "virtual"),
-                                                  ),
+                                                  ...getStarRating(
+                                                      representedItem[
+                                                          'rating']),
                                                   const SizedBox(
                                                     width: 8,
                                                   ),
@@ -161,9 +177,9 @@ class ItemScreen extends StatelessWidget {
                                               const SizedBox(
                                                 height: 5,
                                               ),
-                                              const Text(
-                                                "4 Star Ratings",
-                                                style: TextStyle(
+                                              Text(
+                                                "${representedItem['rating']} Star Ratings",
+                                                style: const TextStyle(
                                                   color: AppColor.red,
                                                   fontSize: 12,
                                                 ),
@@ -174,19 +190,19 @@ class ItemScreen extends StatelessWidget {
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.end,
-                                              children: const [
-                                                SizedBox(
+                                              children: [
+                                                const SizedBox(
                                                   height: 20,
                                                 ),
                                                 Text(
-                                                  "Rs. 750",
-                                                  style: TextStyle(
+                                                  "PHP ${representedItem['cost']}",
+                                                  style: const TextStyle(
                                                     color: AppColor.primary,
                                                     fontSize: 30,
                                                     fontWeight: FontWeight.w700,
                                                   ),
                                                 ),
-                                                Text("/per Portion")
+                                                const Text("/per Portion")
                                               ],
                                             ),
                                           )
@@ -208,11 +224,11 @@ class ItemScreen extends StatelessWidget {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    const Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 20),
-                                      child: Text(
-                                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ornare leo non mollis id cursus. Eu euismod faucibus in leo malesuada"),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      child:
+                                          Text(representedItem['description']),
                                     ),
                                     const SizedBox(
                                       height: 20,
@@ -261,64 +277,27 @@ class ItemScreen extends StatelessWidget {
                                         child: DropdownButtonHideUnderline(
                                           child: DropdownButton(
                                             hint: Row(
-                                              children: const [
-                                                Text(
-                                                    "-Select the size of portion-"),
+                                              children: [
+                                                ...representedItemPortion.map<
+                                                    Widget>((e) => Text(e)),
                                               ],
                                             ),
-                                            value: "default",
-                                            onChanged: (_) {},
-                                            items: const [
-                                              DropdownMenuItem(
-                                                value: "default",
-                                                child: Text(
-                                                    "-Select the size of portion-"),
-                                              ),
-                                            ],
-                                            icon: Image.asset(
-                                              Helper.getAssetName(
-                                                "dropdown.png",
-                                                "virtual",
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20),
-                                      child: Container(
-                                        height: 50,
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.only(
-                                            left: 30, right: 10),
-                                        decoration: ShapeDecoration(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                          color: AppColor.placeholderBg,
-                                        ),
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton(
-                                            hint: Row(
-                                              children: const [
-                                                Text(
-                                                    "-Select the ingredients-"),
-                                              ],
-                                            ),
-                                            value: "default",
-                                            onChanged: (_) {},
-                                            items: const [
-                                              DropdownMenuItem(
-                                                value: "default",
-                                                child: Text(
-                                                    "-Select the ingredients-"),
-                                              ),
+                                            value: selectedPortion,
+                                            onChanged: (newPortion) {
+                                              setState(() {
+                                                selectedPortion = newPortion ??
+                                                    selectedPortion;
+                                              });
+                                            },
+                                            items: [
+                                              ...representedItemPortion.map<
+                                                      DropdownMenuItem<String>>(
+                                                  (elem) {
+                                                return DropdownMenuItem<String>(
+                                                    value: elem.toString(),
+                                                    child:
+                                                        Text(elem.toString()));
+                                              })
                                             ],
                                             icon: Image.asset(
                                               Helper.getAssetName(
@@ -356,7 +335,13 @@ class ItemScreen extends StatelessWidget {
                                                       elevation:
                                                           MaterialStateProperty
                                                               .all(5.0)),
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      if (qty - 1 > 0) {
+                                                        qty = qty - 1;
+                                                      }
+                                                    });
+                                                  },
                                                   child: const Text("-"),
                                                 ),
                                                 const SizedBox(
@@ -376,9 +361,9 @@ class ItemScreen extends StatelessWidget {
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
                                                             .center,
-                                                    children: const [
+                                                    children: [
                                                       Text(
-                                                        "2",
+                                                        qty.toString(),
                                                         style: TextStyle(
                                                           color: AppColor.red,
                                                         ),
@@ -394,7 +379,11 @@ class ItemScreen extends StatelessWidget {
                                                       elevation:
                                                           MaterialStateProperty
                                                               .all(5.0)),
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      qty = qty + 1;
+                                                    });
+                                                  },
                                                   child: const Text("+"),
                                                 ),
                                               ],
@@ -472,8 +461,8 @@ class ItemScreen extends StatelessWidget {
                                                     const SizedBox(
                                                       height: 10,
                                                     ),
-                                                    const Text(
-                                                      "LKR 1500",
+                                                    Text(
+                                                      'PHP ${representedItem["cost"] * qty}',
                                                       style: TextStyle(
                                                         color: AppColor.primary,
                                                         fontWeight:
@@ -485,7 +474,81 @@ class ItemScreen extends StatelessWidget {
                                                     SizedBox(
                                                       width: 200,
                                                       child: ElevatedButton(
-                                                          onPressed: () {},
+                                                          onPressed: () async {
+                                                            if (await addToCart(
+                                                                representedItem[
+                                                                    'id'],
+                                                                qty,
+                                                                selectedPortion!,
+                                                                representedItem[
+                                                                        'cost'] *
+                                                                    qty)) {
+                                                              showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      ((BuildContext
+                                                                          context) {
+                                                                    return AlertDialog(
+                                                                      title: const Text(
+                                                                          "Successfully added!"),
+                                                                      content:
+                                                                          SingleChildScrollView(
+                                                                              child: ListBody(
+                                                                        children: const <
+                                                                            Widget>[
+                                                                          Text(
+                                                                              "The item has been successfully added!")
+                                                                        ],
+                                                                      )),
+                                                                      actions: <
+                                                                          Widget>[
+                                                                        TextButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            Navigator.of(context).popUntil((route) =>
+                                                                                route.isFirst);
+                                                                          },
+                                                                          child:
+                                                                              Text('OK'),
+                                                                        )
+                                                                      ],
+                                                                    );
+                                                                  }));
+                                                            } else {
+                                                              showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      ((BuildContext
+                                                                          context) {
+                                                                    return AlertDialog(
+                                                                      title: const Text(
+                                                                          "Error"),
+                                                                      content:
+                                                                          SingleChildScrollView(
+                                                                              child: ListBody(
+                                                                        children: const <
+                                                                            Widget>[
+                                                                          Text(
+                                                                              "Item was not added to cart!")
+                                                                        ],
+                                                                      )),
+                                                                      actions: <
+                                                                          Widget>[
+                                                                        TextButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            Navigator.of(context).pop();
+                                                                          },
+                                                                          child:
+                                                                              Text('OK'),
+                                                                        )
+                                                                      ],
+                                                                    );
+                                                                  }));
+                                                            }
+                                                          },
                                                           child: Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
@@ -545,25 +608,6 @@ class ItemScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                right: 20,
-                              ),
-                              child: Align(
-                                alignment: Alignment.topRight,
-                                child: Container(
-                                  width: 60,
-                                  height: 60,
-                                  color: Colors.white,
-                                  child: Image.asset(
-                                    Helper.getAssetName(
-                                      "fav_filled.png",
-                                      "virtual",
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
                           ],
                         ),
                       ),
@@ -628,4 +672,32 @@ class CustomTriangle extends CustomClipper<Path> {
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
     return true;
   }
+}
+
+List<Widget> getStarRating(double rating) {
+  List<Widget> stars = [];
+  for (int i = 0; i < 5; i++) {
+    if (rating >= 1.0) {
+      stars.add(
+        Image.asset(
+          Helper.getAssetName("star_filled.png", "virtual"),
+        ),
+      );
+      rating--;
+    } else if (rating > 0) {
+      stars.add(
+        Image.asset(
+          Helper.getAssetName("star_filled.png", "virtual"),
+        ),
+      );
+      rating = 0;
+    } else {
+      stars.add(
+        Image.asset(
+          Helper.getAssetName("star.png", "virtual"),
+        ),
+      );
+    }
+  }
+  return stars;
 }
