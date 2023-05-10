@@ -57,6 +57,7 @@ class _AllItemsScreenState extends State<AllItemsScreen> {
                       child: RecentItemCard(
                         name: e['title'],
                         rating: e['rating'],
+                        region: e['region'],
                         ratingCount: e['rating_count'],
                         restaurantType: e['restaurant_type'],
                         image: Image.asset(

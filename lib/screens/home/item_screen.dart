@@ -19,8 +19,7 @@ class _ItemScreenState extends State<ItemScreen> {
   int qty = 1;
   String? selectedPortion;
 
-  Future<bool> addToCart(
-      int itemId, int qty, String portion, double price) async {
+  Future<bool> addToCart(int itemId, int qty, String portion, num price) async {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
@@ -674,7 +673,7 @@ class CustomTriangle extends CustomClipper<Path> {
   }
 }
 
-List<Widget> getStarRating(double rating) {
+List<Widget> getStarRating(num rating) {
   List<Widget> stars = [];
   for (int i = 0; i < 5; i++) {
     if (rating >= 1.0) {

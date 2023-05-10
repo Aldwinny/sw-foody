@@ -142,7 +142,7 @@ class OfferCard extends StatelessWidget {
                   style: TextStyle(
                       color: AppColor.red, fontWeight: FontWeight.bold),
                 ),
-                const Text(" Western Food · 20% OFF"),
+                const Text(" Manila · 20% OFF"),
               ],
             ),
           )

@@ -115,17 +115,19 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  void refresh() {
+  void refresh() async {
     globalUser = Provider.of<UserData>(context, listen: false).user ??
         FirebaseAuth.instance.currentUser;
     var userData = Provider.of<UserData>(context, listen: false).userData;
 
-    if (userData == null) {
+    print(userData);
+
+    if (userData == null || userData.isEmpty) {
+      print("reached");
       final userRef = FirebaseFirestore.instance.collection('users');
-      final query = userRef
-          .doc(globalUser!.uid)
-          .get()
-          .then((value) => {userData = value.data()});
+      final query = await userRef.doc(globalUser!.uid).get();
+
+      userData = query.data();
     }
 
     setState(() {

@@ -83,7 +83,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
-          home: const HomeScreen(),
+          home: const SplashScreen(),
           routes: {
             LandingScreen.routeName: (context) => const LandingScreen(),
 

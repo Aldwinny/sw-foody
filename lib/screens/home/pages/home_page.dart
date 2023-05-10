@@ -294,6 +294,7 @@ class _HomePageState extends State<HomePage> {
                         child: RecentItemCard(
                             name: e['title'],
                             rating: e['rating'],
+                            region: e['region'],
                             ratingCount: e['rating_count'],
                             restaurantType: e['restaurant_type'],
                             image: Image.asset(
@@ -318,12 +319,14 @@ class RecentItemCard extends StatelessWidget {
     required this.name,
     required this.image,
     required this.restaurantType,
+    required this.region,
     required this.rating,
     required this.ratingCount,
   });
 
   final String name;
   final String restaurantType;
+  final String region;
   final int ratingCount;
   final double rating;
   final Image image;
@@ -358,12 +361,12 @@ class RecentItemCard extends StatelessWidget {
                       .copyWith(color: AppColor.primary),
                 ),
                 Row(
-                  children: const [
-                    Text("Cafe"),
-                    SizedBox(
+                  children: [
+                    Text(restaurantType),
+                    const SizedBox(
                       width: 5,
                     ),
-                    Padding(
+                    const Padding(
                       padding: EdgeInsets.only(bottom: 5.0),
                       child: Text(
                         ".",
@@ -373,11 +376,11 @@ class RecentItemCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 5,
                     ),
-                    Text("Western Food"),
-                    SizedBox(
+                    Text(region),
+                    const SizedBox(
                       width: 20,
                     ),
                   ],
@@ -441,7 +444,7 @@ class MostPopularCard extends StatelessWidget {
         ),
         Row(
           children: [
-            const Text("Cafe"),
+            const Text("fine dining"),
             const SizedBox(
               width: 5,
             ),
@@ -458,7 +461,7 @@ class MostPopularCard extends StatelessWidget {
             const SizedBox(
               width: 5,
             ),
-            const Text("Western Food"),
+            const Text("Manila"),
             const SizedBox(
               width: 20,
             ),
@@ -540,7 +543,7 @@ class RestaurantCard extends StatelessWidget {
                     const SizedBox(
                       width: 5,
                     ),
-                    const Text("Cafe"),
+                    const Text("fine dining"),
                     const SizedBox(
                       width: 5,
                     ),
@@ -557,7 +560,7 @@ class RestaurantCard extends StatelessWidget {
                     const SizedBox(
                       width: 5,
                     ),
-                    const Text("Western Food"),
+                    const Text("Manila"),
                   ],
                 ),
               ],

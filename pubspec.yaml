@@ -20,10 +20,23 @@ dependencies:
   intl: ^0.17.0
   firebase_storage: ^11.1.2
   image_picker: ^0.8.7+4
+  flutter_launcher_icons: ^0.12.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  image_path: "assets/images/logo/foody_launcher_logo.png"
+  shadow: true
+  adaptive_icon_background: "#BE362C"
+  android: true
+  ios: true
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/images/logo/foody_logo.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -31,7 +44,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
