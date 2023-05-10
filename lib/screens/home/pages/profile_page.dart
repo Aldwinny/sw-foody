@@ -39,12 +39,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       globalUser = FirebaseAuth.instance.currentUser;
-      var userData = Provider.of<UserData>(context, listen: false).userData;
 
-      if (userData == null) {
-        final userRef = FirebaseFirestore.instance.collection('users');
-        final query = await userRef.doc(globalUser!.uid).get();
-      }
+      final userRef = FirebaseFirestore.instance.collection('users');
+      final query = await userRef.doc(globalUser!.uid).get();
+      var userData = query.data();
 
       _nameController.text = globalUser?.displayName ?? '';
       _numberController.text = userData?['number'] ?? '';
@@ -116,19 +114,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void refresh() async {
-    globalUser = Provider.of<UserData>(context, listen: false).user ??
-        FirebaseAuth.instance.currentUser;
-    var userData = Provider.of<UserData>(context, listen: false).userData;
+    globalUser = FirebaseAuth.instance.currentUser;
 
-    print(userData);
+    final userRef = FirebaseFirestore.instance.collection('users');
+    final query = await userRef.doc(globalUser!.uid).get();
 
-    if (userData == null || userData.isEmpty) {
-      print("reached");
-      final userRef = FirebaseFirestore.instance.collection('users');
-      final query = await userRef.doc(globalUser!.uid).get();
-
-      userData = query.data();
-    }
+    var userData = query.data();
 
     setState(() {
       _nameController.text = globalUser?.displayName ?? '';
@@ -440,7 +431,10 @@ class _ProfilePageState extends State<ProfilePage> {
                             )),
                       )
                     : isLoading
-                        ? CircularProgressIndicator()
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(),
+                          )
                         : Text(''),
                 SizedBox(
                   height: 50,

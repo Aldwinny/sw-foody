@@ -112,14 +112,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-                Text(
-                  "Sign Up",
-                  style: Helper.getTheme(context).headline6,
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    "Add your details to sign up",
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+                  child: Column(
+                    children: [
+                      Text(
+                        "Sign Up",
+                        style: Helper.getTheme(context).headline6,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Add your details to sign up",
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Padding(
