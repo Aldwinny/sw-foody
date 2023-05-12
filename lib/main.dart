@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:foody_app/screens/auth/forgot_password_screen.dart';
 import 'package:foody_app/screens/auth/signin_screen.dart';
 import 'package:foody_app/screens/auth/signup_screen.dart';
 import 'package:foody_app/screens/home/all_items_screen.dart';
@@ -90,8 +89,6 @@ class MyApp extends StatelessWidget {
             // User Authentication
             SigninScreen.routeName: (context) => const SigninScreen(),
             SignUpScreen.routeName: (context) => const SignUpScreen(),
-            ForgotPasswordScreen.routeName: (context) =>
-                const ForgotPasswordScreen(),
 
             // Home Screen
             IntroScreen.routeName: (context) => const IntroScreen(),

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foody_app/main.dart';
-import 'package:foody_app/screens/auth/forgot_password_screen.dart';
 import 'package:foody_app/screens/home/intro_screen.dart';
 import 'package:foody_app/widgets/foody_text_input.dart';
 
@@ -185,8 +184,7 @@ class _SigninScreenState extends State<SigninScreen> {
                   padding: SigninScreen.textInputPadding,
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context)
-                          .pushNamed(ForgotPasswordScreen.routeName);
+                  
                     },
                     child: const Text(
                       "Forget your password?",
