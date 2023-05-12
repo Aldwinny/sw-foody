@@ -20,14 +20,24 @@ class AboutScreen extends StatelessWidget {
               children: [
                 const FoodyAppBar(label: "About Us"),
                 Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: CircleAvatar(
+                    child: Image.asset(
+                        Helper.getAssetName("foody_logo.png", "logo"),
+                        fit: BoxFit.cover),
+                    radius: 120,
+                  ),
+                ),
+                Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
                   ),
                   child: Column(
                     children: const [
-                      AboutCard(label: "Our own text"),
-                      AboutCard(),
-                      AboutCard(),
+                      Text(
+                        "To address this gap in the market, this study aims to develop a local food delivery application that caters specifically to the needs of independent restaurants. By focusing on the local market, the application aims to provide a platform for smaller, independent restaurants to reach a broader customer base and compete with larger chain restaurants. Through the use of advanced technologies such as geolocation, real-time tracking, and order management systems, the application will improve the ordering and delivery process for both restaurants and customers. In summary, the COVID-19 pandemic has led to a significant increase in demand for food delivery services, creating an opportunity for the development of a local food delivery application. By examining the literature on food delivery applications and the unique needs of independent restaurants, this study aims to create an innovative and user-friendly application that benefits both restaurants and customers.",
+                        textAlign: TextAlign.justify,
+                      ),
                     ],
                   ),
                 ),

@@ -99,7 +99,7 @@ class ChangeAddressScreen extends StatelessWidget {
                           height: 10,
                         ),
                         Text(
-                          "Quezon City, Manila, Philippines",
+                          "Barangka, Marikina, Philippines",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 12,

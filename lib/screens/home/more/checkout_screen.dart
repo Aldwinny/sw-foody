@@ -71,7 +71,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   SizedBox(
                     width: Helper.getScreenWidth(context) * 0.4,
                     child: Text(
-                      "Quezon City, Manila, Philippines",
+                      "Barangka, Marikina, Philippines",
                       style: Helper.getTheme(context).headline3,
                     ),
                   ),

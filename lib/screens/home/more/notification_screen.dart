@@ -5,12 +5,8 @@ import 'package:foody_app/widgets/appbar.dart';
 const notificationsList = [
   {"title": "Your order has been picked up", "time": "Now"},
   {"title": "Your order has been delivered", "time": "1hr ago"},
-  {"title": "Lorem ipsum dolor sit amet, consectetur", "time": "3hr ago"},
-  {"title": "Lorem ipsum dolor sit amet, consectetur", "time": "5hr ago"},
-  {"title": "Lorem ipsum dolor sit amet, consectetur", "time": "05 Sep 2020"},
-  {"title": "Lorem ipsum dolor sit amet, consectetur", "time": "12 Aug 2020"},
-  {"title": "Lorem ipsum dolor sit amet, consectetur", "time": "20 Jul 2020"},
-  {"title": "Lorem ipsum dolor sit amet, consectetur", "time": "12 Jul 2020"},
+  {"title": "Your order is on the way", "time": "3hr ago"},
+  {"title": "Your order is being made..", "time": "5hr ago"},
 ];
 
 class NotificationScreen extends StatelessWidget {
